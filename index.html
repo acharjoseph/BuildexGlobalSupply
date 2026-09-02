@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buildex Global Supply | Materiales para tu obra</title>
+  <style>
+    :root { --navy: #102a43; --blue: #1f6f8b; --orange: #e67e22; --sand: #f4f1ea; --white: #ffffff; --text: #243b53; --muted: #627d98; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: Arial, Helvetica, sans-serif; color: var(--text); background: var(--sand); line-height: 1.6; }
+    nav { background: var(--navy); color: var(--white); display: flex; justify-content: space-between; align-items: center; padding: 18px 8%; position: sticky; top: 0; z-index: 10; }
+    .brand { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.4px; }
+    nav ul { display: flex; gap: 24px; list-style: none; }
+    nav a { color: var(--white); text-decoration: none; font-size: 0.95rem; font-weight: 600; }
+    nav a:hover { color: #f7b267; }
+    .hero { min-height: 540px; display: flex; align-items: center; padding: 80px 8%; background: linear-gradient(90deg, rgba(16, 42, 67, .95), rgba(16, 42, 67, .68)), linear-gradient(135deg, #315a72, #16384f); color: var(--white); }
+    .hero-content { max-width: 720px; }
+    .hero p:first-child { color: #f7b267; font-size: .9rem; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 14px; }
+    h1 { font-size: clamp(2.4rem, 5vw, 4.6rem); line-height: 1.08; margin-bottom: 22px; }
+    .hero .subtitle { max-width: 620px; font-size: 1.15rem; color: #e5edf3; margin-bottom: 32px; }
+    .button { display: inline-block; background: var(--orange); color: var(--white); text-decoration: none; padding: 14px 24px; border-radius: 4px; font-weight: 800; transition: .2s ease; }
+    .button:hover { background: #c96514; transform: translateY(-2px); }
+    .products { padding: 80px 8%; }
+    .section-heading { text-align: center; max-width: 650px; margin: 0 auto 42px; }
+    .section-heading h2 { color: var(--navy); font-size: 2rem; margin-bottom: 10px; }
+    .section-heading p, .card p:last-child { color: var(--muted); }
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1180px; margin: 0 auto; }
+    .card { background: var(--white); padding: 30px; border-radius: 8px; border-top: 5px solid var(--orange); box-shadow: 0 8px 22px rgba(16, 42, 67, .09); }
+    .card h3 { color: var(--navy); font-size: 1.3rem; margin-bottom: 12px; }
+    .card .feature { display: inline-block; color: var(--blue); background: #e4f2f6; font-size: .85rem; font-weight: 800; padding: 5px 10px; border-radius: 20px; margin-bottom: 16px; }
+    footer { background: var(--navy); color: #cbd8e6; text-align: center; padding: 24px 8%; font-size: .9rem; }
+    @media (max-width: 760px) { nav { padding: 16px 6%; } nav ul { gap: 14px; } .hero, .products { padding-left: 6%; padding-right: 6%; } .card-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 460px) { nav { flex-direction: column; gap: 12px; } .hero { min-height: 480px; } nav a { font-size: .85rem; } }
+  </style>
+</head>
+<body>
+  <nav><div class="brand">Buildex Global Supply</div><ul><li><a href="#inicio">Inicio</a></li><li><a href="#productos">Productos</a></li><li><a href="#contacto">Contacto</a></li></ul></nav>
+  <main>
+    <section class="hero" id="inicio"><div class="hero-content"><p>Abastecimiento global para construcción</p><h1>Materiales certificados, directo a tu obra.</h1><p class="subtitle">Reducimos los costos de construcción conectando tu proyecto con las mejores fábricas del mundo y gestionando toda la importación hasta la entrega.</p><a class="button" href="#productos">Conoce nuestras soluciones</a></div></section>
+    <section class="products" id="productos"><div class="section-heading"><h2>Soluciones para construir mejor</h2><p>Calidad internacional, logística especializada y suministro confiable para cada etapa de tu proyecto.</p></div><div class="card-grid"><article class="card"><h3>Acero estructural</h3><span class="feature">Certificación internacional</span><p>Perfiles, varillas y soluciones de acero para estructuras sólidas y proyectos de gran escala.</p></article><article class="card"><h3>Acabados premium</h3><span class="feature">Ahorro por compra directa</span><p>Pisos, recubrimientos, grifería y materiales seleccionados para elevar la calidad de cada desarrollo.</p></article><article class="card"><h3>Importación puerta a obra</h3><span class="feature">Logística integral</span><p>Coordinamos proveedores, aduana, transporte y entrega para que tus materiales lleguen a tiempo.</p></article></div></section>
+  </main>
+  <footer id="contacto"><p>© 2026 Buildex Global Supply. Todos los derechos reservados.</p></footer>
+</body>
+</html>
