@@ -121,8 +121,7 @@
       transform: translateY(-2px);
     }
 
-    .products,
-    .process {
+    .products {
       padding: 80px 8%;
     }
 
@@ -138,14 +137,11 @@
       margin-bottom: 10px;
     }
 
-    .section-heading p,
-    .card p:last-child,
-    .process-step p {
+    .section-heading p {
       color: var(--muted);
     }
 
-    .card-grid,
-    .process-grid {
+    .card-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 24px;
@@ -161,8 +157,7 @@
       box-shadow: 0 8px 22px rgba(16, 42, 67, 0.09);
     }
 
-    .card h3,
-    .process-step h3 {
+    .card h3 {
       color: var(--navy);
       font-size: 1.3rem;
       margin-bottom: 12px;
@@ -179,48 +174,8 @@
       margin-bottom: 16px;
     }
 
-    .process {
-      background: #e4f2f6;
-    }
-
-    .process-inner {
-      max-width: 1180px;
-      margin: 0 auto;
-    }
-
-    .process .section-heading {
-      margin-bottom: 38px;
-    }
-
-    .process-step {
-      background: var(--white);
-      border-radius: 8px;
-      padding: 28px 26px;
-      box-shadow: 0 8px 22px rgba(16, 42, 67, 0.07);
-    }
-
-    .step-number {
-      display: block;
-      color: var(--orange);
-      font-size: 0.85rem;
-      font-weight: 800;
-      letter-spacing: 1px;
-      margin-bottom: 9px;
-    }
-
-    .process-step h3 {
-      font-size: 1.18rem;
-      margin-bottom: 10px;
-    }
-
-    .process-note {
-      border-left: 4px solid var(--orange);
-      color: var(--navy);
-      font-weight: 700;
-      max-width: 850px;
-      margin: 32px auto 0;
-      padding: 10px 0 10px 18px;
-      text-align: center;
+    .card p:last-child {
+      color: var(--muted);
     }
 
     footer {
@@ -241,14 +196,12 @@
       }
 
       .hero,
-      .products,
-      .process {
+      .products {
         padding-left: 6%;
         padding-right: 6%;
       }
 
-      .card-grid,
-      .process-grid {
+      .card-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -317,47 +270,6 @@
         </article>
       </div>
     </section>
-
-    <section class="process" id="proceso">
-      <div class="process-inner">
-        <div class="section-heading">
-          <h2>De la fábrica a tu obra, sin incertidumbre</h2>
-          <p>
-            Un proceso diseñado para equipos de construcción que necesitan precio competitivo, especificaciones verificables y entregas coordinadas con su calendario de obra.
-          </p>
-        </div>
-
-        <div class="process-grid">
-          <article class="process-step">
-            <span class="step-number">01 · ORIGEN VERIFICADO</span>
-            <h3>Compra directa a fabricantes</h3>
-            <p>
-              Identificamos fábricas internacionales alineadas con las especificaciones y el volumen de tu proyecto, eliminando intermediarios innecesarios.
-            </p>
-          </article>
-
-          <article class="process-step">
-            <span class="step-number">02 · CALIDAD CONTROLADA</span>
-            <h3>Materiales con respaldo</h3>
-            <p>
-              Validamos certificados y documentación técnica antes del embarque para que el ahorro no implique comprometer la calidad de tu obra.
-            </p>
-          </article>
-
-          <article class="process-step">
-            <span class="step-number">03 · ENTREGA COORDINADA</span>
-            <h3>Importación hasta el frente de obra</h3>
-            <p>
-              Gestionamos importación, aduana y transporte, coordinando la entrega con tus necesidades de suministro y tiempos de construcción.
-            </p>
-          </article>
-        </div>
-
-        <p class="process-note">
-          Un solo socio para abastecimiento internacional, trazabilidad documental y logística de última milla.
-        </p>
-      </div>
-    </section>
   </main>
 
   <footer id="contacto">
@@ -365,3 +277,4 @@
   </footer>
 </body>
 </html>
+```
