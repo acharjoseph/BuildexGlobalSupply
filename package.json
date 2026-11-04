@@ -1,0 +1,10 @@
+{
+  "name": "buildex-global-supply",
+  "private": true,
+  "version": "1.0.0",
+  "type": "commonjs",
+  "dependencies": {
+    "mammoth": "1.13.0",
+    "pdf-parse": "1.1.4"
+  }
+}
