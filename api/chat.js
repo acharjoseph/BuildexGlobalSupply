@@ -23,12 +23,12 @@ function loadKnowledge() {
   }
   const docsDir = path.join(process.cwd(), "knowledge");
   try {
-    for (const file of fs.readdirSync(docsDir).filter(f => /\.md$/i.test(f))) {
+    for (const file of fs.readdirSync(docsDir).filter(f => /\.md$/i.test(f) && f.toLowerCase() !== "readme.md")) {
       const text = fs.readFileSync(path.join(docsDir, file), "utf8");
       if (text.trim() && !text.includes("Coloca aquí")) entries.push({ source: file, text });
     }
   } catch {}
-  entries.push({source:"Sitio oficial de Buildex", text:"Buildex Global Supply es una empresa mexicana que comercializa materiales y acabados de fabricantes internacionales mediante importación y distribución. Atiende a constructoras, desarrolladores, arquitectos, diseñadores y propietarios. Su atención es personalizada para revisar opciones y preparar una cotización según las necesidades del proyecto. Para cotizaciones y contacto, escribir por WhatsApp al +52 55 8677 1680. El proceso publicado contempla revisar modelos, acabados y requerimientos antes de preparar una cotización. El sitio presenta acceso a fabricantes internacionales, importación y distribución en México."});
+  entries.push({source:"Sitio oficial de Buildex", text:"Buildex Global Supply es una empresa mexicana que comercializa materiales y acabados de fabricantes internacionales mediante importación y distribución. Atiende a constructoras, desarrolladores, arquitectos, diseñadores y propietarios. Su atención es personalizada para revisar opciones y preparar una cotización según las necesidades del proyecto. Para cotizaciones, cotizar un proyecto, precios y contacto, escribir por WhatsApp al +52 55 8677 1680. El proceso publicado contempla revisar modelos, acabados y requerimientos antes de preparar una cotización. El sitio presenta acceso a fabricantes internacionales, importación y distribución en México. Categorías que aparecen en el catálogo: pisos SPC, pisos laminados, paneles WPC, paneles 3D, paneles acústicos, piedra flexible, láminas PVC y deck exterior. Buildex ofrece materiales de construcción, pisos, paneles, acabados y productos para proyectos; la información exacta de cada modelo está en su ficha de catálogo."});
   return entries;
 }
 function retrieve(question, docs) {
