@@ -88,3 +88,35 @@ $$;
 
 revoke all on function public.match_buildex_knowledge(extensions.vector, integer) from public, anon, authenticated;
 grant execute on function public.match_buildex_knowledge(extensions.vector, integer) to service_role;
+
+-- Atomically publish only fully embedded documents and retire replaced sources.
+create or replace function public.activate_buildex_document(
+  target_id uuid,
+  prior_id uuid default null
+)
+returns void
+language plpgsql
+security definer
+set search_path = public, extensions
+as $$
+begin
+  if prior_id is not null then
+    update public.knowledge_documents
+       set is_active = false, status = 'superseded', updated_at = now()
+     where id = prior_id;
+    delete from public.knowledge_chunks where document_id = prior_id;
+  end if;
+
+  update public.knowledge_documents
+     set is_active = true, status = 'ready', processing_error = null,
+         processed_at = now(), updated_at = now(), replaces_document_id = null
+   where id = target_id and status = 'processing';
+
+  if not found then
+    raise exception 'Document is not processing';
+  end if;
+end;
+$$;
+
+revoke all on function public.activate_buildex_document(uuid, uuid) from public, anon, authenticated;
+grant execute on function public.activate_buildex_document(uuid, uuid) to service_role;
