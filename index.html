@@ -359,7 +359,7 @@
       .catalog-card-image { aspect-ratio:1.35/1; }
     }
   </style>
-</head>
+  <link rel="stylesheet" href="assets/assistant.css">\n</head>
 <body>
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
   <header class="topbar">
@@ -500,10 +500,38 @@
   <dialog class="product-dialog" id="product-dialog" aria-labelledby="dialog-title">
     <div class="dialog-shell" id="dialog-content"></div>
   </dialog>
+
+  <button class="assistant-launcher" id="assistant-launcher" type="button" aria-controls="buildex-assistant" aria-expanded="false" aria-label="Abrir Asistente Buildex">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 18.5 3.8 21l4.1-1.4c1.1.6 2.4.9 3.8.9 5 0 9-3.8 9-8.5s-4-8.5-9-8.5-9 3.8-9 8.5c0 2.6 1.2 4.9 3.3 6.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 12h.01M12 12h.01M16 12h.01" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+    Asistente Buildex
+  </button>
+  <section class="assistant-panel" id="buildex-assistant" data-open="false" role="dialog" aria-label="Asistente Buildex" aria-modal="false">
+    <header class="assistant-head">
+      <div class="assistant-brand"><span class="assistant-brand-mark" aria-hidden="true">B</span><span><strong>Asistente Buildex</strong><small>Materiales y proyectos · México</small></span></div>
+      <button class="assistant-close" id="assistant-close" type="button" aria-label="Cerrar asistente">×</button>
+    </header>
+    <div class="assistant-content">
+      <div class="assistant-welcome"><p>Hola. Puedo orientarte con información publicada sobre Buildex y su catálogo. ¿Qué necesitas para tu proyecto?</p>
+        <div class="assistant-suggestions" aria-label="Preguntas sugeridas">
+          <button type="button">¿Qué tipos de materiales ofrece Buildex?</button>
+          <button type="button">¿Qué especificaciones tiene el piso Fiorano SPC?</button>
+          <button type="button">¿Qué información necesitan para cotizar mi proyecto?</button>
+          <button type="button">¿Cómo puedo contactar a Buildex?</button>
+        </div>
+      </div>
+      <div class="assistant-messages" id="assistant-messages" aria-live="polite" aria-relevant="additions"></div>
+    </div>
+    <form class="assistant-form" id="assistant-form">
+      <label class="sr-only" for="assistant-input">Escribe tu pregunta para Buildex</label>
+      <textarea id="assistant-input" rows="1" maxlength="1200" placeholder="Escribe tu pregunta…" required></textarea>
+      <button type="submit" aria-label="Enviar pregunta">↑</button>
+    </form>
+    <p class="assistant-legal">Respuestas basadas en información disponible. Para confirmar precios y disponibilidad, solicita una cotización.</p>
+  </section>
   <footer class="footer">
     <div class="wrap footer-inner"><p><span class="footer-brand">Buildex Global Supply</span> · Materiales y acabados para proyectos en México</p><p>© <span id="year"></span> Buildex Global Supply</p></div>
   </footer>
-  <script src="assets/products.js" defer></script>
+  <script src="assets/assistant.js" defer></script>\n  <script src="assets/products.js" defer></script>
   <script src="assets/catalog.js" defer></script>
 </body>
 </html>
