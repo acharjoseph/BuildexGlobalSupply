@@ -25,7 +25,7 @@ function cosine(a, b) {
 }
 function isBuildexQuestion(q) {
   return /\b(buildex|nuestro catálogo|su catálogo|catálogo de|productos que (?:venden|manejan|comercializan)|precio|precios|cotiza(?:r|ción|ciones)?|disponibilidad|hay en existencia|stock|inventario|proveedor(?:es)?|fabricante(?:s)?|servicio(?:s)? de|tiempo(?:s)? de entrega|tiempo(?:s)? de importación|importación de|entregan|entrega(?:s)? de|condiciones comerciales|garantía de|modelo fiorano|murano|spc fiorano)\b/i.test(q)
-    || /\b(?:modelo|código|ficha)\s+[a-z]{2,5}[- ]?\d{2,6}\b/i.test(q);
+    || /\b[a-z]{2,4}[- ]?\d{3,4}\b/i.test(q);
 }
 async function openai(pathname, body) {
   const response = await fetch(`https://api.openai.com/v1/${pathname}`, { method:"POST", headers:{ Authorization:`Bearer ${process.env.OPENAI_API_KEY}`, "Content-Type":"application/json" }, body:JSON.stringify(body) });
