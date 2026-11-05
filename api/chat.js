@@ -30,13 +30,13 @@ function isBuildexQuestion(q) {
     || /\b[a-z]{2,4}[- ]?\d{3,4}\b/i.test(q);
 }
 function basicAnswer(question) {
-  const q = question.toLocaleLowerCase("es").normalize("NFD").replace(/[\\u0300-\\u036f]/g, "");
-  if (/\\b(gracias|muchas gracias|te agradezco)\\b/.test(q)) return "¡Con gusto! Si quieres, cuéntame qué material o proyecto tienes en mente y te ayudo a revisar el catálogo.";
-  if (/\\b(adios|hasta luego|nos vemos|bye)\\b/.test(q)) return "¡Hasta luego! Cuando quieras, aquí estoy para ayudarte con tu proyecto.";
-  if (/\\b(quien eres|que puedes hacer|como me ayudas|ayuda|que haces)\\b/.test(q)) return "Soy el asistente de Buildex. Puedo orientarte sobre materiales y construcción, buscar datos en nuestro catálogo y ayudarte a preparar una consulta o cotización. ¿Qué necesitas para tu proyecto?";
-  if (/\\bque es wpc\\b|\\bwpc\\b/.test(q) && /\\b(que es|significa|material|panel|piso|elegir|instalar|necesito|busco)\\b/.test(q)) return "WPC significa compuesto de madera y polímero. Se usa en paneles y revestimientos; sus acabados y desempeño dependen del modelo. Si buscas uno para tu proyecto, puedo revisar el catálogo de Buildex. ¿Lo necesitas para interior o exterior?";
-  if (/\\b(elegir|recomiendas|recomendar|conviene|cual material|qué material)\\b/.test(q)) return "La elección depende del uso, la exposición a humedad o sol, el tránsito y el acabado que buscas. Cuéntame dónde lo instalarás y qué estilo tienes en mente; también puedo revisar las opciones que aparecen en el catálogo de Buildex.";
-  if (/\\b(cotizacion|cotizar|cotizame)\\b/.test(q)) return "Para orientarte con una cotización, normalmente ayuda tener el tipo de material o modelo, los metros cuadrados y la ciudad de entrega. Los precios y la disponibilidad actuales los confirma el equipo de Buildex por WhatsApp.";
+  const q = question.toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  if (/\b(gracias|muchas gracias|te agradezco)\b/.test(q)) return "¡Con gusto! Si quieres, cuéntame qué material o proyecto tienes en mente y te ayudo a revisar el catálogo.";
+  if (/\b(adios|hasta luego|nos vemos|bye)\b/.test(q)) return "¡Hasta luego! Cuando quieras, aquí estoy para ayudarte con tu proyecto.";
+  if (/\b(quien eres|que puedes hacer|como me ayudas|ayuda|que haces)\b/.test(q)) return "Soy el asistente de Buildex. Puedo orientarte sobre materiales y construcción, buscar datos en nuestro catálogo y ayudarte a preparar una consulta o cotización. ¿Qué necesitas para tu proyecto?";
+  if (/\bque es wpc\b|\bwpc\b/.test(q) && /\b(que es|significa|material|panel|piso|elegir|instalar|necesito|busco)\b/.test(q)) return "WPC significa compuesto de madera y polímero. Se usa en paneles y revestimientos; sus acabados y desempeño dependen del modelo. Si buscas uno para tu proyecto, puedo revisar el catálogo de Buildex. ¿Lo necesitas para interior o exterior?";
+  if (/\b(elegir|recomiendas|recomendar|conviene|cual material|qué material)\b/.test(q)) return "La elección depende del uso, la exposición a humedad o sol, el tránsito y el acabado que buscas. Cuéntame dónde lo instalarás y qué estilo tienes en mente; también puedo revisar las opciones que aparecen en el catálogo de Buildex.";
+  if (/\b(cotizacion|cotizar|cotizame)\b/.test(q)) return "Para orientarte con una cotización, normalmente ayuda tener el tipo de material o modelo, los metros cuadrados y la ciudad de entrega. Los precios y la disponibilidad actuales los confirma el equipo de Buildex por WhatsApp.";
   return "Claro, puedo orientarte con dudas básicas de construcción y materiales, y consultar el catálogo para productos de Buildex. Cuéntame qué material buscas, dónde lo usarás y qué necesitas saber.";
 }
 async function openai(pathname, body) {
