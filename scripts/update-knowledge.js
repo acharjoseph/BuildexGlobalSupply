@@ -72,7 +72,7 @@ async function main() {
   const chunks = [];
   const seen = new Set();
   for (const doc of documents) {
-    const hash = crypto.createHash("sha256").update(doc.source + "\0" + doc.text).digest("hex");
+    const hash = crypto.createHash("sha256").update(doc.text).digest("hex");
     if (!seen.has(hash)) { seen.add(hash); chunks.push({ id: hash, source: doc.source, text: doc.text }); }
   }
   const vectors = [];
