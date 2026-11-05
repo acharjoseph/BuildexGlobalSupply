@@ -73,7 +73,7 @@ module.exports = async function handler(req, res) {
     }
     if (!process.env.OPENAI_API_KEY) {
       if (companyQuestion && context) {
-        const wpcQuestion = /\\b(wpc|panel(?:es)? de pared)\\b/i.test(question);
+        const wpcQuestion = /\b(wpc|panel(?:es)? de pared)\b/i.test(question);
         const answer = wpcQuestion
           ? "Claro. El catálogo incluye varios modelos de panel WPC con distintos perfiles y medidas, y describe acabados con relieve tridimensional. Para recomendarte opciones, dime dónde lo instalarás y cuántos metros cuadrados necesitas. Los precios y la disponibilidad actuales requieren confirmación; si gustas, seguimos por WhatsApp."
           : "Encontré información relacionada en el catálogo de Buildex. Para ubicar el modelo correcto, dime el nombre o código del producto y qué dato necesitas (medidas, especificaciones o instalación). Los precios y la disponibilidad actuales los confirma nuestro equipo por WhatsApp.";
