@@ -25,6 +25,8 @@ function cosine(a, b) {
 }
 function isBuildexQuestion(q) {
   return /\b(buildex|nuestro catálogo|su catálogo|catálogo de|productos que (?:venden|manejan|comercializan)|precio|precios|cotiza(?:r|ción|ciones)?|disponibilidad|hay en existencia|stock|inventario|proveedor(?:es)?|fabricante(?:s)?|servicio(?:s)? de|tiempo(?:s)? de entrega|tiempo(?:s)? de importación|importación de|entregan|entrega(?:s)? de|condiciones comerciales|garantía de|modelo fiorano|murano|spc fiorano)\b/i.test(q)
+    || /\b(?:necesito|busco|quiero comprar|me interesa|cotizar|cotízame|manejan|venden|ofrecen|tienen)\b.{0,70}\b(?:material(?:es)?|piso|panel(?:es)?|wpc|mármol|marmol|travertino|piedra|revestimiento|recubrimiento)\b/i.test(q)
+    || /\b(?:panel(?:es)?|piso|wpc|mármol|marmol|travertino|piedra)\b.{0,45}\b(?:buildex|catálogo|catalogo|precio|cotización|cotizacion|disponibilidad|comprar)\b/i.test(q)
     || /\b[a-z]{2,4}[- ]?\d{3,4}\b/i.test(q);
 }
 async function openai(pathname, body) {
@@ -49,7 +51,6 @@ module.exports = async function handler(req, res) {
   const question = typeof req.body?.question === "string" ? req.body.question.trim() : "";
   if (!question || question.length > 1200) return res.status(400).json({ error:"Escribe una pregunta de hasta 1,200 caracteres." });
   if (/^(?:hola|buenos días|buenas tardes|buenas noches|buenas|hey|qué tal|que tal|hi)[.!?\s]*$/i.test(question)) return res.status(200).json({ answer:"¡Hola! Soy el asistente de Buildex. Puedo ayudarte con dudas generales sobre construcción y materiales, o buscar información confirmada de nuestro catálogo. ¿Qué necesitas para tu proyecto?" });
-  if (!process.env.OPENAI_API_KEY) return res.status(503).json({ error:"El asistente aún requiere configuración. Escríbenos por WhatsApp.", contactUrl:WHATSAPP });
   try {
     const companyQuestion = isBuildexQuestion(question);
     let context = "", sources = [];
@@ -59,6 +60,16 @@ module.exports = async function handler(req, res) {
       if (!matches.length) return res.status(200).json({ answer:"No tengo información confirmada sobre eso en este momento. Para darte una respuesta precisa, te recomiendo contactar directamente a nuestro equipo por WhatsApp. Con gusto te ayudaremos.", contactUrl:WHATSAPP, sources:[] });
       context = matches.map((m,i) => `[Fuente ${i+1}: ${m.source}]\n${m.text}`).join("\n\n");
       sources = [...new Set(matches.map(m => m.source))];
+    }
+    if (!process.env.OPENAI_API_KEY) {
+      if (companyQuestion && context) {
+        return res.status(200).json({
+          answer:"Claro. El catálogo incluye varios modelos de panel WPC con distintos perfiles y medidas, y describe acabados con relieve tridimensional. Para recomendarte opciones, dime dónde lo instalarás y cuántos metros cuadrados necesitas. Los precios y la disponibilidad actuales requieren confirmación; si gustas, seguimos por WhatsApp.",
+          contactUrl:WHATSAPP,
+          sources
+        });
+      }
+      return res.status(503).json({ error:"Para responder preguntas generales necesito que el asistente esté configurado. Mientras tanto, puedo ayudarte con información del catálogo o puedes contactar al equipo por WhatsApp.", contactUrl:WHATSAPP });
     }
     const user = companyQuestion
       ? `Pregunta del cliente: ${question}\n\nFragmentos recuperados de Buildex:\n${context}\n\nContesta sólo con lo que respaldan los fragmentos. Si hay versiones contradictorias, solicita confirmación a Buildex por WhatsApp. Si falta un dato, explica qué falta y ofrece WhatsApp.`
