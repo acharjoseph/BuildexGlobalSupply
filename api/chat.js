@@ -29,6 +29,16 @@ function isBuildexQuestion(q) {
     || /\b(?:panel(?:es)?|piso|wpc|mármol|marmol|travertino|piedra)\b.{0,45}\b(?:buildex|catálogo|catalogo|precio|cotización|cotizacion|disponibilidad|comprar)\b/i.test(q)
     || /\b[a-z]{2,4}[- ]?\d{3,4}\b/i.test(q);
 }
+function basicAnswer(question) {
+  const q = question.toLocaleLowerCase("es").normalize("NFD").replace(/[\\u0300-\\u036f]/g, "");
+  if (/\\b(gracias|muchas gracias|te agradezco)\\b/.test(q)) return "¡Con gusto! Si quieres, cuéntame qué material o proyecto tienes en mente y te ayudo a revisar el catálogo.";
+  if (/\\b(adios|hasta luego|nos vemos|bye)\\b/.test(q)) return "¡Hasta luego! Cuando quieras, aquí estoy para ayudarte con tu proyecto.";
+  if (/\\b(quien eres|que puedes hacer|como me ayudas|ayuda|que haces)\\b/.test(q)) return "Soy el asistente de Buildex. Puedo orientarte sobre materiales y construcción, buscar datos en nuestro catálogo y ayudarte a preparar una consulta o cotización. ¿Qué necesitas para tu proyecto?";
+  if (/\\bque es wpc\\b|\\bwpc\\b/.test(q) && /\\b(que es|significa|material|panel|piso|elegir|instalar|necesito|busco)\\b/.test(q)) return "WPC significa compuesto de madera y polímero. Se usa en paneles y revestimientos; sus acabados y desempeño dependen del modelo. En el catálogo de Buildex hay varios perfiles y medidas de panel WPC. ¿Lo buscas para interior o exterior y cuántos metros cuadrados necesitas?";
+  if (/\\b(elegir|recomiendas|recomendar|conviene|cual material|qué material)\\b/.test(q)) return "La elección depende del uso, la exposición a humedad o sol, el tránsito y el acabado que buscas. Cuéntame dónde lo instalarás y qué estilo tienes en mente; también puedo revisar las opciones que aparecen en el catálogo de Buildex.";
+  if (/\\b(cotizacion|cotizar|cotizame)\\b/.test(q)) return "Para orientarte con una cotización, normalmente ayuda tener el tipo de material o modelo, los metros cuadrados y la ciudad de entrega. Los precios y la disponibilidad actuales los confirma el equipo de Buildex por WhatsApp.";
+  return "Claro, puedo orientarte con dudas básicas de construcción y materiales, y consultar el catálogo para productos de Buildex. Cuéntame qué material buscas, dónde lo usarás y qué necesitas saber.";
+}
 async function openai(pathname, body) {
   const response = await fetch(`https://api.openai.com/v1/${pathname}`, { method:"POST", headers:{ Authorization:`Bearer ${process.env.OPENAI_API_KEY}`, "Content-Type":"application/json" }, body:JSON.stringify(body) });
   if (!response.ok) throw new Error(`OpenAI request failed: ${response.status}`);
@@ -63,13 +73,14 @@ module.exports = async function handler(req, res) {
     }
     if (!process.env.OPENAI_API_KEY) {
       if (companyQuestion && context) {
-        return res.status(200).json({
-          answer:"Claro. El catálogo incluye varios modelos de panel WPC con distintos perfiles y medidas, y describe acabados con relieve tridimensional. Para recomendarte opciones, dime dónde lo instalarás y cuántos metros cuadrados necesitas. Los precios y la disponibilidad actuales requieren confirmación; si gustas, seguimos por WhatsApp.",
-          contactUrl:WHATSAPP,
-          sources
-        });
+        const wpcQuestion = /\\b(wpc|panel(?:es)? de pared)\\b/i.test(question);
+        const answer = wpcQuestion
+          ? "Claro. El catálogo incluye varios modelos de panel WPC con distintos perfiles y medidas, y describe acabados con relieve tridimensional. Para recomendarte opciones, dime dónde lo instalarás y cuántos metros cuadrados necesitas. Los precios y la disponibilidad actuales requieren confirmación; si gustas, seguimos por WhatsApp."
+          : "Encontré información relacionada en el catálogo de Buildex. Para ubicar el modelo correcto, dime el nombre o código del producto y qué dato necesitas (medidas, especificaciones o instalación). Los precios y la disponibilidad actuales los confirma nuestro equipo por WhatsApp.";
+        return res.status(200).json({ answer, contactUrl:WHATSAPP, sources });
       }
-      return res.status(503).json({ error:"Para responder preguntas generales necesito que el asistente esté configurado. Mientras tanto, puedo ayudarte con información del catálogo o puedes contactar al equipo por WhatsApp.", contactUrl:WHATSAPP });
+      if (!companyQuestion) return res.status(200).json({ answer:basicAnswer(question) });
+      return res.status(200).json({ answer:"No encontré ese dato confirmado en el catálogo. Para ayudarte con precisión, te recomiendo contactar al equipo de Buildex por WhatsApp.", contactUrl:WHATSAPP, sources:[] });
     }
     const user = companyQuestion
       ? `Pregunta del cliente: ${question}\n\nFragmentos recuperados de Buildex:\n${context}\n\nContesta sólo con lo que respaldan los fragmentos. Si hay versiones contradictorias, solicita confirmación a Buildex por WhatsApp. Si falta un dato, explica qué falta y ofrece WhatsApp.`
