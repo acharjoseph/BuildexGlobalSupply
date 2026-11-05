@@ -48,6 +48,7 @@ module.exports = async function handler(req, res) {
   if (!bucket || now - bucket.started >= 60000) buckets.set(ip, { started:now, count:1 }); else bucket.count += 1;
   const question = typeof req.body?.question === "string" ? req.body.question.trim() : "";
   if (!question || question.length > 1200) return res.status(400).json({ error:"Escribe una pregunta de hasta 1,200 caracteres." });
+  if (/^(?:hola|buenos días|buenas tardes|buenas noches|buenas|hey|qué tal|que tal|hi)[.!?\\s]*$/i.test(question)) return res.status(200).json({ answer:"¡Hola! Soy el asistente de Buildex. Puedo ayudarte con dudas generales sobre construcción y materiales, o buscar información confirmada de nuestro catálogo. ¿Qué necesitas para tu proyecto?" });
   if (!process.env.OPENAI_API_KEY) return res.status(503).json({ error:"El asistente aún requiere configuración. Escríbenos por WhatsApp.", contactUrl:WHATSAPP });
   try {
     const companyQuestion = isBuildexQuestion(question);
