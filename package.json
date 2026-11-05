@@ -3,6 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "type": "commonjs",
+  "scripts": {
+    "knowledge:update": "node scripts/update-knowledge.js"
+  },
   "dependencies": {
     "mammoth": "1.13.0",
     "pdf-parse": "1.1.4"
