@@ -1,7 +1,7 @@
 # Base de conocimiento Buildex
 
-Agrega aquí archivos PDF, DOCX o TXT que contengan información oficial aprobada por Buildex. Se permiten subcarpetas. El índice vectorial se genera con `npm run knowledge:update`; requiere `OPENAI_API_KEY` en el entorno local.
+Agrega aquí documentos oficiales aprobados en PDF, DOCX o TXT, también dentro de subcarpetas. Actualiza el índice con `npm run knowledge:update`; el comando no necesita clave API.
 
-Después de actualizar, incluye en el despliegue tanto los documentos como `index.json` (o vuelve a ejecutar el comando en tu flujo de publicación). El índice se reconstruye desde cero con el contenido actual: reemplazos y eliminaciones quedan reflejados, y no se duplican fragmentos con el mismo contenido. No guardes aquí secretos ni datos personales de clientes.
+El índice se reconstruye desde cero con los documentos que haya en esta carpeta y el catálogo de productos existente. Al reconstruir, reemplazos y eliminaciones quedan reflejados; se omiten fragmentos duplicados. Incluye el `index.json` generado al publicar para que la función del asistente pueda consultarlo.
 
-El índice contiene embeddings y fragmentos del material comercial para búsqueda; sólo la función de servidor lo usa. No contiene la clave API.
+La búsqueda vectorial de este piloto usa términos normalizados de los documentos. Las respuestas conversacionales siguen requiriendo `OPENAI_API_KEY` en las variables de entorno del servidor. Nunca pongas esa clave en el navegador ni la guardes en esta carpeta.
