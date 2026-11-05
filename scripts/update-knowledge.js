@@ -5,9 +5,9 @@ const vm = require("node:vm");
 const mammoth = require("mammoth");
 const pdfParse = require("pdf-parse");
 const root = process.cwd(), inputDir = path.join(root, "knowledge_base"), outputFile = path.join(inputDir, "index.json");
-const extensions = new Set([".pdf", ".docx", ".txt"]), maxChars = 1800, overlap = 250;
+const extensions = new Set([".pdf", ".docx", ".txt"]), maxChars = 400, overlap = 80;
 const STOP = new Set("a al algo aqui así como con cual cuales cuando cuanto da de del desde donde el ella ellas ellos en entre es esa esas ese esos esta estas este estos fue ha hasta hay la las le les lo los mas me mi mis mucha muy no o para pero por que se si sin sobre su sus te tu un una uno unos unas y ya the a an and are as at be by for from how in is it of on or that the this to was what when which with".split(" "));
-const ALIASES = { floor:"piso", flooring:"piso", floors:"piso", pisos:"piso", suelo:"piso", wall:"panel", walls:"panel", paneles:"panel", panel:"panel", acoustic:"acustico", acousticpanel:"acustico", width:"ancho", height:"alto", length:"largo", dimensions:"medida", dimension:"medida", dimensiones:"medida", medidas:"medida", medida:"medida", profile:"perfil", profiles:"perfil", thickness:"grosor", espesor:"grosor", model:"modelo", waterproof:"impermeable" };
+const ALIASES = { floor:"piso", flooring:"piso", floors:"piso", pisos:"piso", suelo:"piso", wall:"panel", walls:"panel", paneles:"panel", panel:"panel", acoustic:"acustico", acousticpanel:"acustico", width:"medida", ancho:"medida", height:"medida", alto:"medida", length:"medida", largo:"medida", dimensions:"medida", dimension:"medida", dimensiones:"medida", medidas:"medida", size:"medida", profile:"perfil", profiles:"perfil", thickness:"grosor", espesor:"grosor", model:"modelo", waterproof:"impermeable" };
 function embedLocally(value) {
   const tokens = String(value || "").toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g, "").match(/[a-z0-9]+/g) || [];
   const vector = Object.create(null);
