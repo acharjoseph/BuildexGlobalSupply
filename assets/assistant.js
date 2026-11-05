@@ -20,7 +20,7 @@
   async function ask(question){
     const q=question.trim();if(!q)return;
     suggestions.hidden=true;bubble(q,"user");input.value="";input.disabled=true;
-    const pending=bubble("Estoy revisando la información de Buildex…","bot");
+    const pending=bubble("Estoy preparando una respuesta…","bot");
     form.querySelector("button").disabled=true;
     try{
       const response=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q})});
