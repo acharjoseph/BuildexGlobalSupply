@@ -7,6 +7,7 @@
   const messages=document.getElementById("assistant-messages");
   const suggestions=document.querySelector(".assistant-suggestions");
   const contact="https://wa.me/525586771680?text=Hola%2C%20tengo%20una%20consulta%20sobre%20un%20material%20o%20proyecto.";
+  const history=[];
   function open(){panel.dataset.open="true";launcher.setAttribute("aria-expanded","true");input.focus()}
   function shut(){panel.dataset.open="false";launcher.setAttribute("aria-expanded","false");launcher.focus()}
   launcher.addEventListener("click",()=>panel.dataset.open==="true"?shut():open());
@@ -20,14 +21,18 @@
   async function ask(question){
     const q=question.trim();if(!q)return;
     suggestions.hidden=true;bubble(q,"user");input.value="";input.disabled=true;
+    const priorHistory=history.slice(-8);
+    history.push({role:"user",content:q});
     const pending=bubble("Estoy preparando una respuesta…","bot");
     form.querySelector("button").disabled=true;
     try{
-      const response=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q})});
+      const response=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,history:priorHistory})});
       const data=await response.json();
       pending.remove();
       if(!response.ok){bubble(data.error||"No pude responder en este momento.","bot",true);return}
-      bubble(data.answer||"No encontré información suficiente para responder con certeza.","bot",Boolean(data.contactUrl));
+      const answer=data.answer||"No encontré información suficiente para responder con certeza.";
+      history.push({role:"assistant",content:answer});
+      bubble(answer,"bot",Boolean(data.contactUrl));
     }catch{
       pending.remove();bubble("No pude conectar con el asistente en este momento. Puedes contactar directamente a Buildex.","bot",true);
     }finally{input.disabled=false;form.querySelector("button").disabled=false;input.focus()}
