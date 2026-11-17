@@ -103,6 +103,36 @@ function formatProduct(item, question, includeSpecs = false) {
   if (!specs.length && !exactModel && product.models?.length) lines.push(product.models.length + " modelos documentados en el catálogo.");
   return lines.join("\n");
 }
+function followUpAnswer(question, matches) {
+  const q = normalize(question);
+  const location = q.match(/\b(interior|exterior)\b/)?.[1];
+  const quantityMatch = q.match(/\b(\d+(?:[.,]\d+)?)\s*(?:m2|m²|metros cuadrados)\b/);
+  if (!location && !quantityMatch) return null;
+  const item = matches[0];
+  if (!item) return null;
+  const product = item.product;
+  const specs = item.exactModel?.specs?.length ? item.exactModel.specs : product.specs || [];
+  const areaSpec = specs.find(spec => {
+    const value = Array.isArray(spec) ? spec[1] : spec;
+    return /m(?:²|2)\s*por\s*caja/i.test(String(value));
+  });
+  const parts = [];
+  if (location) parts.push("Perfecto, tomo en cuenta que lo necesitas para " + location + ".");
+  if (quantityMatch && areaSpec) {
+    const value = Array.isArray(areaSpec) ? areaSpec[1] : areaSpec;
+    const coverage = Number(String(value).match(/[\d.]+/)?.[0]);
+    const requestedArea = Number(quantityMatch[1].replace(",", "."));
+    if (coverage > 0 && requestedArea > 0) {
+      const boxes = Math.ceil(requestedArea / coverage);
+      parts.push("El catálogo indica " + value + ". Para " + requestedArea + " m² serían aproximadamente " + boxes + " cajas, antes de considerar merma y cortes.");
+    }
+  }
+  if (quantityMatch && !areaSpec) parts.push("No encuentro el rendimiento por caja de este modelo en el catálogo, así que no voy a estimar cajas.");
+  if (!quantityMatch) parts.push("¿Cuántos metros cuadrados necesitas cubrir?");
+  if ((quantityMatch && !areaSpec) || /(?:precio|cotiz|disponibilidad|stock)/.test(q)) parts.push("Para confirmarlo, puedo comunicarte con el equipo por WhatsApp.");
+  else parts.push("¿Quieres revisar acabados o pedir una cotización?");
+  return { answer:parts.join(" "), contactUrl:(quantityMatch && !areaSpec) || /(?:precio|cotiz|disponibilidad|stock)/.test(q) ? WHATSAPP : undefined, sources:["Catálogo de productos Buildex"] };
+}
 function catalogAnswer(question, products, matches) {
   if (!matches.length) return null;
   const q = normalize(question), priceQuestion = /\b(precio|precios|cotizar|cotizacion|stock|existencia|disponibilidad)\b/.test(q);
@@ -163,6 +193,8 @@ module.exports = async function handler(req, res) {
     ].join("\n\n");
     if (!process.env.OPENAI_API_KEY) {
       if (companyQuestion) {
+        const contextualFollowUp = effectiveQuestion !== question ? followUpAnswer(question, productMatches) : null;
+        if (contextualFollowUp) return res.status(200).json(contextualFollowUp);
         const answer = catalogAnswer(effectiveQuestion, products, productMatches);
         if (answer) return res.status(200).json(answer);
         const excerpt = chunks.slice(0, 2).map(chunk => chunk.text).join("\n");
