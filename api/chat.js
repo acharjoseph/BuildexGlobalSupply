@@ -82,14 +82,17 @@ function findProducts(question, products) {
     if (colorHits.length) score += 2;
     if (score > 0) ranked.push({ product, score, exactModel, colorHits });
   }
-  return ranked.sort((a,b) => b.score - a.score).slice(0, 3);
+  ranked.sort((a,b) => b.score - a.score);
+  if (!ranked.length) return [];
+  if (ranked[0].exactModel || ranked[0].score - (ranked[1]?.score || 0) >= 6) return ranked.slice(0, 1);
+  return ranked.slice(0, 3);
 }
 function formatProduct(item, question) {
   const product = item.product, q = normalize(question), exactModel = item.exactModel;
   const lines = [product.name + " (" + product.category + ")"];
   if (exactModel) lines.push("Modelo: " + exactModel.model);
   const specs = (exactModel?.specs?.length ? exactModel.specs : product.specs || []).map(spec => Array.isArray(spec) ? spec[0] + ": " + spec[1] : spec);
-  if (specs.length && /especific|medida|dimension|ancho|largo|alto|espesor|grosor|modelo|ficha/.test(q)) lines.push("Datos del catálogo: " + specs.join("; "));
+  if (specs.length) lines.push("Medidas y datos del catálogo: " + specs.join("; "));
   if (exactModel?.finishes?.length) lines.push("Acabados/códigos: " + exactModel.finishes.slice(0, 8).join(", "));
   else if (product.colors?.length && /color|acabado|tono/.test(q)) lines.push("Acabados: " + product.colors.join(", "));
   if (!exactModel && product.models?.length && /modelo|modelos|codigo/.test(q)) lines.push("Modelos documentados: " + product.models.slice(0, 8).map(model => model.model).join(", ") + (product.models.length > 8 ? " y otros" : ""));
