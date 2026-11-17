@@ -111,6 +111,8 @@ function catalogAnswer(question, products, matches) {
   }
   const asksDetails = /especific|medida|dimension|ancho|largo|alto|espesor|grosor|modelo|ficha/.test(q);
   const details = matches.map(item => formatProduct(item, question, matches.length === 1 || asksDetails)).join("\n\n");
+  const missingDetails = asksDetails && matches.some(item => !(item.exactModel?.specs?.length || item.product.specs?.length));
+  if (missingDetails) return { answer:details + "\n\nNo tengo medidas confirmadas para esta variante en el catálogo consultado. Para no inventarlas, te comunico con el equipo por WhatsApp para confirmarlas.", contactUrl:WHATSAPP, sources:["Catálogo de productos Buildex"] };
   return { answer: details + "\n\n¿Quieres que te ayude con medidas, acabados o una cotización?", sources:["Catálogo de productos Buildex"] };
 }
 function basicAnswer(question, history = []) {
