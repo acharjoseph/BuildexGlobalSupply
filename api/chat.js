@@ -150,17 +150,17 @@ function basicAnswer(question, history = []) {
   const q = normalize(question);
   const previousAssistant = [...history].reverse().find(item => item.role === "assistant")?.content || "";
   const previousAssistantNormalized = normalize(previousAssistant);
-  if (/\\b(gracias|muchas gracias|te agradezco)\\b/.test(q)) return "¡Con gusto! ¿Qué más necesitas revisar para tu proyecto?";
-  if (/\\b(adios|hasta luego|nos vemos|bye)\\b/.test(q)) return "¡Hasta luego! Cuando quieras, aquí estaré para ayudarte.";
-  if (/\\b(quien eres|que puedes hacer|como me ayudas|ayuda|que haces)\\b/.test(q)) return "Soy el asistente de Buildex. Puedo responder dudas básicas sobre materiales, revisar modelos y medidas del catálogo, y ayudarte a preparar una cotización.";
-  if (/\\bque es wpc\\b|\\bwpc\\b/.test(q) && /\\b(que es|significa|material|panel|piso|elegir|instalar|necesito|busco)\\b/.test(q)) return "WPC es un compuesto de fibras de madera y polímeros. Se usa en paneles y revestimientos; sus propiedades dependen de cada producto. ¿Lo estás considerando para interior o exterior?";
-  if (/\\b(elegir|recomiendas|recomendar|conviene|cual material|que material)\\b/.test(q)) return "La elección depende del uso, la humedad y exposición al sol, el tránsito y el acabado. Dime dónde lo instalarás y qué estilo buscas para orientarte.";
-  if (/\\b(cotizacion|cotizar|cotizame)\\b/.test(q)) return "Para cotizar, normalmente ayuda saber el producto o modelo, la cantidad, la ciudad y estado, y las medidas o acabado que buscas.";
+  if (/\b(gracias|muchas gracias|te agradezco)\b/.test(q)) return "¡Con gusto! ¿Qué más necesitas revisar para tu proyecto?";
+  if (/\b(adios|hasta luego|nos vemos|bye)\b/.test(q)) return "¡Hasta luego! Cuando quieras, aquí estaré para ayudarte.";
+  if (/\b(quien eres|que puedes hacer|como me ayudas|ayuda|que haces)\b/.test(q)) return "Soy el asistente de Buildex. Puedo responder dudas básicas sobre materiales, revisar modelos y medidas del catálogo, y ayudarte a preparar una cotización.";
+  if (/\bque es wpc\b|\bwpc\b/.test(q) && /\b(que es|significa|material|panel|piso|elegir|instalar|necesito|busco)\b/.test(q)) return "WPC es un compuesto de fibras de madera y polímeros. Se usa en paneles y revestimientos; sus propiedades dependen de cada producto. ¿Lo estás considerando para interior o exterior?";
+  if (/\b(elegir|recomiendas|recomendar|conviene|cual material|que material)\b/.test(q)) return "La elección depende del uso, la humedad y exposición al sol, el tránsito y el acabado. Dime dónde lo instalarás y qué estilo buscas para orientarte.";
+  if (/\b(cotizacion|cotizar|cotizame)\b/.test(q)) return "Para cotizar, normalmente ayuda saber el producto o modelo, la cantidad, la ciudad y estado, y las medidas o acabado que buscas.";
 
   if (history.length && previousAssistant) {
-    const room = q.match(/\\b(sala|cocina|bano|recamara|habitacion|terraza|fachada|oficina|comedor|patio)\\b/)?.[1];
-    const material = q.match(/\\b(piso|panel|muro|pared|revestimiento|piedra|marmol|travertino|madera|acabado)\\b/)?.[1];
-    const use = q.match(/\\b(interior|exterior)\\b/)?.[1];
+    const room = q.match(/\b(sala|cocina|bano|recamara|habitacion|terraza|fachada|oficina|comedor|patio)\b/)?.[1];
+    const material = q.match(/\b(piso|panel|muro|pared|revestimiento|piedra|marmol|travertino|madera|acabado)\b/)?.[1];
+    const use = q.match(/\b(interior|exterior)\b/)?.[1];
     if (room && /que necesitas|que espacio|donde lo instalar|para tu proyecto/.test(previousAssistantNormalized)) {
       return "Perfecto, para " + question.trim() + ". ¿Buscas renovar el piso, el muro o ambos?";
     }
@@ -178,7 +178,7 @@ function basicAnswer(question, history = []) {
     }
   }
 
-  if (/\\b(remodel|renovar|construir|construccion|proyecto|acabado|material|piso|panel|muro|cocina|sala|bano|terraza|fachada)\\b/.test(q)) {
+  if (/\b(remodel|renovar|construir|construccion|proyecto|acabado|material|piso|panel|muro|cocina|sala|bano|terraza|fachada)\b/.test(q)) {
     return "Claro, puedo ayudarte a elegir opciones para ese proyecto. ¿Qué espacio o superficie quieres trabajar y qué acabado estás buscando?";
   }
   return "Claro, puedo orientarte con dudas básicas de construcción y materiales, o buscar productos y especificaciones en el catálogo de Buildex. Cuéntame qué espacio o material tienes en mente y te doy el siguiente paso.";
