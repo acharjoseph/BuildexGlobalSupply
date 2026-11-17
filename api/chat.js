@@ -30,7 +30,7 @@ function isBuildexQuestion(q) {
     || /\b(?:necesito|busco|quiero|me interesa|cotizar|cotízame|manejan|venden|ofrecen|tienen|muéstrame|muestrame)\b.{0,70}\b(?:material(?:es)?|piso|panel(?:es)?|wpc|mármol|marmol|travertino|piedra|revestimiento|recubrimiento)\b/i.test(q)
     || /\b(?:panel(?:es)?|piso|wpc|mármol|marmol|travertino|piedra|fiorano)\b.{0,45}\b(?:buildex|catálogo|catalogo|precio|cotización|cotizacion|disponibilidad|comprar|especificaciones|medidas)\b/i.test(q)
     || (/\b(?:fiorano|wpc|spc|panel(?:es)?|piso|murano|pvc|travertino)\b/i.test(q) && /\b(especificaciones?|medidas?|dimensiones?|ancho|largo|alto|espesor|grosor|acabados?|colores?|modelo)\b/i.test(q))
-    || /\b[a-z]{2,5}[- ]?\d{2,5}[a-z]?\b/i.test(q);
+    || /\b[a-z]{1,5}[- ]?\d{2,5}[a-z]?\b/i.test(q);
 }
 function loadChunks() {
   try {
@@ -88,12 +88,14 @@ function findProducts(question, products) {
   if (ranked[0].exactModel || ranked[0].score - (ranked[1]?.score || 0) >= 6) return ranked.slice(0, 1);
   return ranked.slice(0, 3);
 }
-function formatProduct(item, question) {
+function formatProduct(item, question, includeSpecs = false) {
   const product = item.product, q = normalize(question), exactModel = item.exactModel;
   const lines = [product.name + " (" + product.category + ")"];
   if (exactModel) lines.push("Modelo: " + exactModel.model);
   const specs = (exactModel?.specs?.length ? exactModel.specs : product.specs || []).map(spec => Array.isArray(spec) ? spec[0] + ": " + spec[1] : spec);
-  if (specs.length) lines.push("Medidas y datos del catálogo: " + specs.join("; "));
+  const asksDetails = /especific|medida|dimension|ancho|largo|alto|espesor|grosor|modelo|ficha/.test(q);
+  if (specs.length && (includeSpecs || asksDetails)) lines.push("Medidas y datos del catálogo: " + specs.join("; "));
+  else if (!specs.length && exactModel && asksDetails) lines.push("El catálogo consultado no muestra medidas ni especificaciones para este modelo.");
   if (exactModel?.finishes?.length) lines.push("Acabados/códigos: " + exactModel.finishes.slice(0, 8).join(", "));
   else if (product.colors?.length && /color|acabado|tono/.test(q)) lines.push("Acabados: " + product.colors.join(", "));
   if (!exactModel && product.models?.length && /modelo|modelos|codigo/.test(q)) lines.push("Modelos documentados: " + product.models.slice(0, 8).map(model => model.model).join(", ") + (product.models.length > 8 ? " y otros" : ""));
@@ -103,11 +105,13 @@ function formatProduct(item, question) {
 function catalogAnswer(question, products, matches) {
   if (!matches.length) return null;
   const q = normalize(question), priceQuestion = /\b(precio|precios|cotizar|cotizacion|stock|existencia|disponibilidad)\b/.test(q);
-  const details = matches.map(item => formatProduct(item, question)).join("\n\n");
-  const answer = priceQuestion
-    ? details + "\n\nEl catálogo no confirma precios ni existencia actual. Para cotización y disponibilidad, te comunico con el equipo por WhatsApp."
-    : details + "\n\n¿Quieres que te ayude con medidas, acabados o una cotización?";
-  return { answer, contactUrl: priceQuestion ? WHATSAPP : undefined, sources: ["Catálogo de productos Buildex"] };
+  if (priceQuestion) {
+    const productsText = matches.slice(0, 3).map(item => item.product.name + (item.exactModel ? " · " + item.exactModel.model : "")).join("; ");
+    return { answer:"En el catálogo aparecen: " + productsText + ". El catálogo no confirma precios ni existencia actual; te comunico con el equipo para cotización y disponibilidad.", contactUrl:WHATSAPP, sources:["Catálogo de productos Buildex"] };
+  }
+  const asksDetails = /especific|medida|dimension|ancho|largo|alto|espesor|grosor|modelo|ficha/.test(q);
+  const details = matches.map(item => formatProduct(item, question, matches.length === 1 || asksDetails)).join("\n\n");
+  return { answer: details + "\n\n¿Quieres que te ayude con medidas, acabados o una cotización?", sources:["Catálogo de productos Buildex"] };
 }
 function basicAnswer(question, history = []) {
   const q = normalize(question);
