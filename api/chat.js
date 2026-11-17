@@ -30,7 +30,8 @@ function isBuildexQuestion(q) {
     || /\b(?:necesito|busco|quiero|me interesa|cotizar|cotízame|manejan|venden|ofrecen|tienen|muéstrame|muestrame)\b.{0,70}\b(?:material(?:es)?|piso|panel(?:es)?|wpc|mármol|marmol|travertino|piedra|revestimiento|recubrimiento)\b/i.test(q)
     || /\b(?:panel(?:es)?|piso|wpc|mármol|marmol|travertino|piedra|fiorano)\b.{0,45}\b(?:buildex|catálogo|catalogo|precio|cotización|cotizacion|disponibilidad|comprar|especificaciones|medidas)\b/i.test(q)
     || (/\b(?:fiorano|wpc|spc|panel(?:es)?|piso|murano|pvc|travertino)\b/i.test(q) && /\b(especificaciones?|medidas?|dimensiones?|ancho|largo|alto|espesor|grosor|acabados?|colores?|modelo)\b/i.test(q))
-    || /\b[a-z]{1,5}[- ]?\d{2,5}[a-z]?\b/i.test(q);
+    || /\b[a-z]{1,5}[- ]?\d{2,5}[a-z]?\b/i.test(q)
+    || /^(?:spc|wpc|piso|panel|paneles|murano|pvc|laminado|laminados|piedra flexible)$/i.test(normalize(q));
 }
 function loadChunks() {
   try {
@@ -148,14 +149,46 @@ function catalogAnswer(question, products, matches) {
 }
 function basicAnswer(question, history = []) {
   const q = normalize(question);
+  const previousAssistant = [...history].reverse().find(item => item.role === "assistant")?.content || "";
+  const previousAssistantNormalized = normalize(previousAssistant);
   if (/\b(gracias|muchas gracias|te agradezco)\b/.test(q)) return "¡Con gusto! ¿Qué más necesitas revisar para tu proyecto?";
   if (/\b(adios|hasta luego|nos vemos|bye)\b/.test(q)) return "¡Hasta luego! Cuando quieras, aquí estaré para ayudarte.";
   if (/\b(quien eres|que puedes hacer|como me ayudas|ayuda|que haces)\b/.test(q)) return "Soy el asistente de Buildex. Puedo responder dudas básicas sobre materiales, revisar modelos y medidas del catálogo, y ayudarte a preparar una cotización.";
   if (/\bque es wpc\b|\bwpc\b/.test(q) && /\b(que es|significa|material|panel|piso|elegir|instalar|necesito|busco)\b/.test(q)) return "WPC es un compuesto de fibras de madera y polímeros. Se usa en paneles y revestimientos; sus propiedades dependen de cada producto. ¿Lo estás considerando para interior o exterior?";
   if (/\b(elegir|recomiendas|recomendar|conviene|cual material|que material)\b/.test(q)) return "La elección depende del uso, la humedad y exposición al sol, el tránsito y el acabado. Dime dónde lo instalarás y qué estilo buscas para orientarte.";
-  if (history.length && /^(interior|exterior|sala|cocina|baño|bano|terraza|fachada|muro|piso)(?: .*)?$/.test(q)) return "Entendido: lo necesitas para " + question + ". ¿Qué medida o acabado tienes en mente? También puedo buscar opciones del catálogo.";
   if (/\b(cotizacion|cotizar|cotizame)\b/.test(q)) return "Para cotizar, normalmente ayuda saber el producto o modelo, la cantidad, la ciudad y estado, y las medidas o acabado que buscas.";
-  return "Claro, puedo orientarte con dudas básicas de construcción y materiales, o buscar productos y especificaciones en el catálogo de Buildex. ¿Qué necesitas para tu proyecto?";
+
+  if (history.length && previousAssistant) {
+    const room = q.match(/\b(sala|cocina|bano|recamara|habitacion|terraza|fachada|oficina|comedor|patio)\b/)?.[1];
+    const material = q.match(/\b(piso|panel|muro|pared|revestimiento|piedra|marmol|travertino|madera|acabado)\b/)?.[1];
+    const use = q.match(/\b(interior|exterior)\b/)?.[1];
+    if (material && /piso.{0,20}muro|muro.{0,20}piso|ambos/.test(previousAssistantNormalized)) {
+      return "Perfecto, buscas " + material + ". Puedo mostrarte las opciones del catálogo. ¿Tienes en mente un tipo, como SPC, laminado o WPC?";
+    }
+    if (room && /que necesitas|que espacio|donde lo instalar|para tu proyecto/.test(previousAssistantNormalized)) {
+      return "Perfecto, para " + question.trim() + ". ¿Buscas renovar el piso, el muro o ambos?";
+    }
+    if (material && /que material|que acabado|que buscas|que necesitas/.test(previousAssistantNormalized)) {
+      return "Entiendo, buscas " + question.trim() + ". ¿En qué espacio lo instalarías y cuántos metros aproximadamente?";
+    }
+    if (use && /interior|exterior/.test(previousAssistantNormalized)) {
+      return "Entendido, lo necesitas para " + use + ". ¿Qué material o superficie quieres trabajar: piso, muro o ambos?";
+    }
+    if (/moderno|rustico|minimalista|contemporaneo|clasico/.test(q)) {
+      return "Perfecto, tomo en cuenta que buscas un estilo " + question.trim() + ". ¿Qué espacio o superficie quieres renovar?";
+    }
+    if (/que necesitas|que buscas|cuentame|dime/.test(previousAssistantNormalized)) {
+      return "Entiendo: " + question.trim() + ". Para orientarte mejor, ¿qué espacio quieres construir o renovar y qué acabado tienes en mente?";
+    }
+  }
+
+  if (/\b(remodel|renovar|construir|construccion|proyecto|acabado|material|piso|panel|muro|cocina|sala|bano|terraza|fachada)\b/.test(q)) {
+    const room = q.match(/\b(sala|cocina|bano|recamara|habitacion|terraza|fachada|oficina|comedor|patio)\b/)?.[1];
+    if (room) return "Perfecto, para " + room + ". ¿Buscas renovar el piso, el muro o ambos?";
+    const material = q.match(/\b(piso|panel|muro|pared|revestimiento|piedra|marmol|travertino|madera|acabado)\b/)?.[1];
+    if (material) return "Entiendo, buscas " + material + ". ¿En qué espacio lo instalarías y qué estilo tienes en mente?";
+    return "Claro, te ayudo. ¿Qué espacio quieres construir o renovar y qué material o acabado estás considerando?";
+  }  return "Claro, puedo orientarte con dudas básicas de construcción y materiales, o buscar productos y especificaciones en el catálogo de Buildex. Cuéntame qué espacio o material tienes en mente y te doy el siguiente paso.";
 }
 async function openai(pathname, body) {
   const response = await fetch("https://api.openai.com/v1/" + pathname, { method:"POST", headers:{ Authorization:"Bearer " + process.env.OPENAI_API_KEY, "Content-Type":"application/json" }, body:JSON.stringify(body) });
