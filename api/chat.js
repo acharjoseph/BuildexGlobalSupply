@@ -149,7 +149,9 @@ module.exports = async function handler(req, res) {
     const faq = companyFaq(question, products);
     if (faq) return res.status(200).json(faq);
     const priorUserQuestion = [...history].reverse().find(item => item.role === "user")?.content || "";
-    const effectiveQuestion = (question.length < 60 && priorUserQuestion && isBuildexQuestion(priorUserQuestion)) ? priorUserQuestion + " " + question : question;
+    const mentionsCurrentProduct = /\\b(?:wpc|spc|panel(?:es)?|piso|fiorano|murano|travertino|mármol|marmol|pvc|deck|[a-z]{1,5}[- ]?\\d{2,5}[a-z]?)\\b/i.test(question);
+    const priorHasSpecificProduct = /\\b(?:wpc|spc|panel(?:es)?|piso|fiorano|murano|travertino|mármol|marmol|pvc|deck|[a-z]{1,5}[- ]?\\d{2,5}[a-z]?)\\b/i.test(priorUserQuestion);
+    const effectiveQuestion = (question.length < 60 && !mentionsCurrentProduct && priorHasSpecificProduct) ? priorUserQuestion + " " + question : question;
     const companyQuestion = isBuildexQuestion(effectiveQuestion);
     const productMatches = companyQuestion ? findProducts(effectiveQuestion, products) : [];
     const chunks = companyQuestion ? loadChunks().map(chunk => ({ ...chunk, score:cosine(embedLocally(effectiveQuestion), chunk.embedding) })).filter(chunk => chunk.score >= 0.12).sort((a,b) => b.score - a.score).slice(0, 4) : [];
