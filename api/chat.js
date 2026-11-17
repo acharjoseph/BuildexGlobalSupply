@@ -52,7 +52,8 @@ function loadProducts() {
 function companyFaq(question, products) {
   const q = normalize(question);
   if (/(que|cuales|qué).{0,30}(tipo|tipos|material|materiales|categoria|categorias).{0,40}(ofrece|vende|maneja|comercializa|tiene) buildex|buildex.{0,30}(material|producto|categoria)/.test(q)) {
-    const categories = [...new Set(products.map(product => product.category).filter(Boolean))];
+    const categories = [...new Set(products.map(product => product.category).filter(Boolean))]
+      .map(category => category === "Exterior" ? "Piso WPC Deck para exterior" : category);
     return { answer: "En el catálogo de Buildex aparecen estas líneas: " + categories.join(", ") + ". ¿Cuál te interesa para tu proyecto?", sources: ["Catálogo de productos Buildex"] };
   }
   if (/(que|cual).{0,40}(necesitan|necesito).{0,30}(cotizar|cotizacion)|informacion.{0,30}cotizar|que.{0,20}datos.{0,20}cotizar/.test(q)) {
