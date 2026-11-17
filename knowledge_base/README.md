@@ -1,7 +1,15 @@
 # Base de conocimiento Buildex
 
-Agrega aquí documentos oficiales aprobados en PDF, DOCX o TXT, también dentro de subcarpetas. Actualiza el índice con `npm run knowledge:update`; el comando no necesita clave API.
+Esta carpeta contiene los documentos que el asistente consulta: archivos PDF, DOCX y TXT, también dentro de subcarpetas. Agrega aquí solo información aprobada para compartir con clientes.
 
-El índice se reconstruye desde cero con los documentos que haya en esta carpeta y el catálogo de productos existente. Al reconstruir, reemplazos y eliminaciones quedan reflejados; se omiten fragmentos duplicados. Incluye el `index.json` generado al publicar para que la función del asistente pueda consultarlo.
+Desde la raíz del proyecto ejecuta:
 
-La búsqueda vectorial de este piloto usa términos normalizados de los documentos. Las respuestas conversacionales siguen requiriendo `OPENAI_API_KEY` en las variables de entorno del servidor. Nunca pongas esa clave en el navegador ni la guardes en esta carpeta.
+```sh
+npm run knowledge:update
+```
+
+El comando no requiere una API key. Reconstruye `index.json` desde cero usando los documentos de esta carpeta y los productos de `assets/products.js`. Al reconstruir, refleja reemplazos y eliminaciones y elimina fragmentos duplicados.
+
+Publica los documentos y el `index.json` generado en GitHub para que Vercel pueda incluirlos en el siguiente despliegue. No hay un portal de administración ni sincronización automática con una carpeta de tu computadora.
+
+El repositorio es público. No agregues precios confidenciales, credenciales ni documentos de uso interno.
