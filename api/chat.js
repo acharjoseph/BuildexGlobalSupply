@@ -29,6 +29,7 @@ function isBuildexQuestion(q) {
   return /\b(buildex|nuestro catálogo|su catálogo|catalogo de|productos que|materiales (?:ofrece|vende|maneja)|tipos de material|precio|precios|cotiza(?:r|ción|ciones)?|disponibilidad|existencia|stock|inventario|proveedor(?:es)?|fabricante(?:s)?|servicio(?:s)? de|tiempo(?:s)? de entrega|tiempo(?:s)? de importación|importación de|entregan|entrega(?:s)? de|condiciones comerciales|garantía de|modelo fiorano|murano|spc fiorano)\b/i.test(q)
     || /\b(?:necesito|busco|quiero|me interesa|cotizar|cotízame|manejan|venden|ofrecen|tienen|muéstrame|muestrame)\b.{0,70}\b(?:material(?:es)?|piso|panel(?:es)?|wpc|mármol|marmol|travertino|piedra|revestimiento|recubrimiento)\b/i.test(q)
     || /\b(?:panel(?:es)?|piso|wpc|mármol|marmol|travertino|piedra|fiorano)\b.{0,45}\b(?:buildex|catálogo|catalogo|precio|cotización|cotizacion|disponibilidad|comprar|especificaciones|medidas)\b/i.test(q)
+    || (/\b(?:fiorano|wpc|spc|panel(?:es)?|piso|murano|pvc|travertino)\b/i.test(q) && /\b(especificaciones?|medidas?|dimensiones?|ancho|largo|alto|espesor|grosor|acabados?|colores?|modelo)\b/i.test(q))
     || /\b[a-z]{2,5}[- ]?\d{2,5}[a-z]?\b/i.test(q);
 }
 function loadChunks() {
