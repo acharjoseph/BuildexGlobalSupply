@@ -44,6 +44,20 @@ La clave de OpenAI debe mantenerse en variables de entorno del servidor; no la e
 
 La carpeta también contiene instrucciones adicionales en [ASSISTANT_SETUP.md](ASSISTANT_SETUP.md).
 
+## Decisiones de diseño vs. sugerencias del IS
+
+### 1. Asistente híbrido: catálogo local e IA opcional
+
+- **Qué propuso el sistema inteligente:** Combinar respuestas programadas y búsqueda en el catálogo y la base de conocimiento con una llamada opcional a OpenAI para preguntas abiertas. La clave de OpenAI debía permanecer en el servidor.
+- **Qué decidí:** Aceptar el enfoque híbrido e implementar primero las respuestas del catálogo sin depender de una clave de IA.
+- **Por qué:** La búsqueda de productos y las preguntas frecuentes siguen disponibles aunque OpenAI no esté configurado o no responda. Así la función principal del asistente no depende de una API externa y no genera ese costo por cada consulta; si después se activa OpenAI, la clave no se expone en el navegador.
+
+### 2. Límite de solicitudes y protección de la rama principal
+
+- **Qué propuso el sistema inteligente:** Añadir un límite en el firewall de Vercel para `/api/chat` de 15 solicitudes por dirección IP cada 60 segundos, y proteger `main` con pull requests, análisis CodeQL y bloqueo de force-push y borrado.
+- **Qué decidí:** Aceptar esas medidas; quedaron configuradas en Vercel y GitHub.
+- **Por qué:** El límite en el firewall reduce ráfagas automatizadas antes de que lleguen a la función, ayudando a controlar abuso y consumo. El pull request y CodeQL añaden una revisión antes de que el código llegue a producción; bloquear force-push y borrado reduce el riesgo de perder o reemplazar accidentalmente la versión publicada.
+
 ## Contacto
 
 Las solicitudes de cotización y las consultas sobre precio o disponibilidad se canalizan al equipo de Buildex por WhatsApp desde el sitio.
